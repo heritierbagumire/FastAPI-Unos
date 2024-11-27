@@ -21,10 +21,14 @@ def welcome_with_parameters(user_class: int, query):
         "class": user_class,
         "query": query
     }
-
+@app.put("/home/{user_name}")
 def put_data(user_name):
     return {
         "name": user_name,
         "age": 23,
-        users_data.append(user_name): users_data
+        users_data.append(user_name): users_data,
     }
+print(users_data)
+
+
+
