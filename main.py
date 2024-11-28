@@ -10,10 +10,7 @@ users_data = list();
 @app.get("/home")
 def welcome_server():
     return {
-        "name": "Heritier",
-        "class": "year 3C",
-        "age": "15",
-
+        "user_data": users_data
     }
 
 @app.get("/home/{user_class}")
@@ -32,12 +29,12 @@ def putData(user_name: str):
         "usernames": user_name
     }
 @app.post("/postdata")
-def postData(user_name: str, querry):
+def postData(user_name: str):
     users_data.append(user_name)
     return {
         "usernames": users_data,
     }
-
+@app.delete("/delete/{user_name}")
 def deleteData(user_name: str):
     users_data.remove(user_name)
     return {
