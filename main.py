@@ -1,4 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Body
+from pydantic import BaseModel
+
 
 
 app = FastAPI()
@@ -21,14 +23,23 @@ def welcome_with_parameters(user_class: int, query):
         "class": user_class,
         "query": query
     }
-@app.put("/home/{user_name}")
-def put_data(user_name):
+
+@app.put("/username/{user_name}")
+def putData(user_name: str):
+    print(users_data)
+    users_data.append(user_name)
     return {
-        "name": user_name,
-        "age": 23,
-        users_data.append(user_name): users_data,
+        "usernames": user_name
     }
-print(users_data)
+@app.post("/postdata")
+def postData(user_name: str, querry):
+    users_data.append(user_name)
+    return {
+        "usernames": users_data,
+    }
 
-
-
+def deleteData(user_name: str):
+    users_data.remove(user_name)
+    return {
+        "username": users_data
+    }
