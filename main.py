@@ -36,7 +36,10 @@ def postData(user_name: str):
     }
 @app.delete("/delete/{user_name}")
 def deleteData(user_name: str):
-    users_data.remove(user_name)
-    return {
-        "username": users_data
-    }
+    try:
+        users_data.remove(user_name)
+        print(user_name)
+        return (users_data)
+    except ValueError:
+        print(f"Error: {user_name} not found in users_data list.")
+        return {"error": f"{user_name} not found"}
