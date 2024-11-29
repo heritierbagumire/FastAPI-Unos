@@ -1,45 +1,40 @@
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Query, HTTPException
 from pydantic import BaseModel
+import logging
 
-
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
-users_data = list();
+# Simulated in-memory database
+users_data = []
 
-@app.get("/home")
+class User(BaseModel):
+    name: str
+
+@app.get("/home", summary="Fetch all users")
 def welcome_server():
-    return {
-        "user_data": users_data
-    }
+    return {"user_data": users_data}
 
-@app.get("/home/{user_class}")
-def welcome_with_parameters(user_class: int, query):
-    return {
-        "name": "Bagumire",
-        "class": user_class,
-        "query": query
-    }
+@app.get("/home/{user_class}", summary="Welcome with parameters")
+def welcome_with_parameters(user_class: int, query: str = Query(..., description="Query parameter")):
+    return {"name": "Bagumire", "class": user_class, "query": query}
 
-@app.put("/username/{user_name}")
-def putData(user_name: str):
-    print(users_data)
+@app.put("/username/{user_name}", summary="Add username")
+def put_data(user_name: str):
+    logging.info(users_data)
     users_data.append(user_name)
-    return {
-        "usernames": user_name
-    }
-@app.post("/postdata")
-def postData(user_name: str):
-    users_data.append(user_name)
-    return {
-        "usernames": users_data,
-    }
-@app.delete("/delete/{user_name}")
-def deleteData(user_name: str):
+    return {"usernames": user_name}
+
+@app.post("/postdata", summary="Add a new user")
+def post_data(user: User):
+    users_data.append(user.name)
+    return {"usernames": users_data}
+
+@app.delete("/delete/{user_name}", summary="Delete a user by username")
+def delete_data(user_name: str):
     try:
         users_data.remove(user_name)
-        print(user_name)
-        return (users_data)
+        return {"message": f"{user_name} successfully removed.", "data": users_data}
     except ValueError:
-        print(f"Error: {user_name} not found in users_data list.")
-        return {"error": f"{user_name} not found"}
+        raise HTTPException(status_code=404, detail=f"{user_name} not found.")
