@@ -11,14 +11,22 @@ users_data = []
 
 class User(BaseModel):
     name: str
+    country: str
+    age: int
 
-@app.get("/home", summary="Fetch all users")
+
+
+@app.get("/home", summary="Fetch all users") # summary parameter to describe the api docs for the backend
 def welcome_server():
-    return {"user_data": users_data}
+    return {
+        "user_data": users_data
+    }
 
 @app.get("/home/{user_class}", summary="Welcome with parameters")
 def welcome_with_parameters(user_class: int, query: str = Query(..., description="Query parameter")):
-    return {"name": "Bagumire", "class": user_class, "query": query}
+    return {
+        "name": "Bagumire", "class": user_class, "query": query
+    }
 
 @app.put("/username/{user_name}", summary="Add username")
 def put_data(user_name: str):
@@ -29,12 +37,16 @@ def put_data(user_name: str):
 @app.post("/postdata", summary="Add a new user")
 def post_data(user: User):
     users_data.append(user.name)
-    return {"usernames": users_data}
+    return {
+        "usernames": users_data
+    }
 
 @app.delete("/delete/{user_name}", summary="Delete a user by username")
 def delete_data(user_name: str):
     try:
         users_data.remove(user_name)
-        return {"message": f"{user_name} successfully removed.", "data": users_data}
+        return {
+            "message": f"{user_name} successfully removed.", "data": users_data
+        }
     except ValueError:
         raise HTTPException(status_code=404, detail=f"{user_name} not found.")
